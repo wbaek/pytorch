@@ -114,19 +114,20 @@ Tensor empty_quantized(
     qtensor.options()
         .merge_in(specified_options)
         .merge_memory_format(memory_format);
-
+  
   Tensor output;
+
   if (qtensor.qscheme() == kPerTensorAffine) {
     output = at::_empty_affine_quantized(size, options,
-                                          qtensor.q_scale(),
-                                          qtensor.q_zero_point());
+                                         qtensor.q_scale(),
+                                         qtensor.q_zero_point());
   } else if (qtensor.qscheme() == kPerChannelAffine || qtensor.qscheme() == kPerChannelAffineFloatQParams) {
     output = at::_empty_per_channel_affine_quantized(
-            size,
-            qtensor.q_per_channel_scales(),
-            qtensor.q_per_channel_zero_points(),
-            qtensor.q_per_channel_axis(),
-            options);
+        size,
+        qtensor.q_per_channel_scales(),
+        qtensor.q_per_channel_zero_points(),
+        qtensor.q_per_channel_axis(),
+        options);
   } else {
     TORCH_CHECK(false,
                 "QScheme not supported by empty_quantized:",
